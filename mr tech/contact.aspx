@@ -40,45 +40,106 @@
             font-size: 14px;
         }
 
-        .contact-box input[type="submit"] {
+        .contact-box button {
+            width: 100%;
             background-color: #f6b800;
             color: #003b65;
             border: none;
+            padding: 12px;
+            font-size: 16px;
             font-weight: bold;
             cursor: pointer;
+            border-radius: 6px;
             transition: 0.3s;
         }
 
-        .contact-box input[type="submit"]:hover {
+        .contact-box button:hover {
             background-color: #ffd54a;
         }
+        .call-btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background-color: #28a745;
+    color: white;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    margin-bottom: 15px;
+    transition: 0.3s;
+}
 
-        .success-msg {
+.call-btn:hover {
+    background-color: #34d058;
+}
+        #status {
+            text-align: center;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .success {
             color: green;
-            text-align: center;
-            margin-bottom: 10px;
         }
 
-        .error-msg {
+        .error {
             color: red;
-            text-align: center;
-            margin-bottom: 10px;
         }
+
     </style>
 </head>
+
 <body>
-    <form id="form1" runat="server">
-        <div class="contact-box">
-            <h2>اتصل بنا</h2>
 
-            <asp:Label ID="lblMessage" runat="server" CssClass="success-msg"></asp:Label>
+    <div class="contact-box">
+        <h2>اتصل بنا</h2>
 
-            <asp:TextBox ID="txtName" runat="server" placeholder="الاسم"></asp:TextBox>
-            <asp:TextBox ID="txtEmail" runat="server" placeholder="البريد الإلكتروني"></asp:TextBox>
-            <asp:TextBox ID="txtMessage" runat="server" TextMode="MultiLine" Rows="5" placeholder="رسالتك"></asp:TextBox>
+        <form id="contactForm">
+            <input type="text" id="name" placeholder="الاسم" required>
+            <input type="email" id="email" placeholder="البريد الإلكتروني" required>
+            <textarea id="message" placeholder="رسالتك" rows="5" required></textarea>
 
-            <asp:Button ID="btnSend" runat="server" Text="إرسال" OnClick="btnSend_Click" />
-        </div>
-    </form>
+            <button type="submit">إرسال</button>
+            <button onclick="window.location.href='tel:+96556565656'" type="button" style="margin-top:10px; background-color:#003b65; color:white;">
+    اتصال مباشرة
+</button>
+        </form>
+
+        <p id="status"></p>
+    </div>
+
+    <!-- EmailJS Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+    <script>
+        // Initialize EmailJS with your public key
+        emailjs.init("02CjcMHfsgba1rqK8");
+
+        document.getElementById("contactForm").addEventListener("submit", function (e) {
+            e.preventDefault(); // منع الريفريش
+
+            emailjs.send("service_ezhkozb", "template_nvr6sqd", {
+                name: document.getElementById("name").value,
+                email: document.getElementById("email").value,
+                message: document.getElementById("message").value
+            })
+                .then(function () {
+                    document.getElementById("status").innerHTML = "تم إرسال رسالتك بنجاح ✓";
+                    document.getElementById("status").className = "success";
+
+                    // Clear fields
+                    document.getElementById("name").value = "";
+                    document.getElementById("email").value = "";
+                    document.getElementById("message").value = "";
+                })
+                .catch(function () {
+                    document.getElementById("status").innerHTML = "حدث خطأ أثناء الإرسال، حاول مرة أخرى!";
+                    document.getElementById("status").className = "error";
+                });
+        });
+    </script>
+
 </body>
 </html>
